@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aketx Herrero — Portafolio de ciberseguridad</title>
+<meta name="description" content="Laboratorios de ciberseguridad documentados por Aketx Herrero: prácticas del curso de especialización y proyectos personales.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0a0d0b;
+  --bg-2: #0f1411;
+  --panel: #111815;
+  --line: #1e2a23;
+  --ink: #e6efe8;
+  --ink-dim: #90a397;
+  --ink-faint: #5c6f64;
+  --green: #39ff5c;
+  --green-deep: #15b23a;
+  --green-glow: rgba(57,255,92,0.14);
+  --amber: #ffb648;
+  --red: #ff5d5d;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  background: var(--bg); z-index: 100;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+mono, .mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ---- top nav ---- */
+nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: rgba(10,13,11,0.82); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+nav .sig { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 15px; letter-spacing: -0.02em; }
+nav .sig b { color: var(--green); }
+nav .links { display: flex; gap: 22px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+nav .links a { color: var(--ink-dim); text-decoration: none; transition: color .15s; }
+nav .links a:hover { color: var(--green); }
+@media (max-width: 640px) { nav .links { display: none; } }
+
+/* ---- hero ---- */
+.hero { padding: 90px 0 70px; position: relative; }
+.hero::before {
+  content: ""; position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 320px; background: radial-gradient(ellipse at center, var(--green-glow), transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.hero .wrap { position: relative; z-index: 1; }
+.prompt-line { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--green); margin-bottom: 26px; }
+.prompt-line .c { color: var(--ink-faint); }
+.cursor { display: inline-block; width: 9px; height: 16px; background: var(--green); vertical-align: -2px; margin-left: 2px; animation: blink 1.1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+h1 {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: clamp(34px, 6vw, 58px); line-height: 1.04; letter-spacing: -0.03em;
+  margin: 0 0 20px;
+}
+h1 .hl { color: var(--green); }
+.hero .sub { font-size: clamp(17px, 2.4vw, 21px); color: var(--ink-dim); max-width: 640px; margin: 0 0 36px; line-height: 1.55; }
+.sig-name { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--ink); border-left: 2px solid var(--green); padding-left: 14px; }
+.sig-name span { display:block; color: var(--ink-faint); font-size: 13px; margin-top: 2px; }
+
+/* ---- stat strip ---- */
+.stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 54px 0 0; }
+.stat { background: var(--bg-2); padding: 22px 18px; }
+.stat .n { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 30px; color: var(--green); line-height: 1; }
+.stat .l { font-size: 12.5px; color: var(--ink-dim); margin-top: 8px; line-height: 1.4; }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2,1fr); } }
+
+/* ---- sections ---- */
+section { padding: 64px 0; border-top: 1px solid var(--line); }
+.sec-id { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green-deep); margin-bottom: 10px; }
+h2 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.02em; margin: 0 0 18px; line-height: 1.1; }
+h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 20px; margin: 36px 0 12px; letter-spacing: -0.01em; }
+p { margin: 0 0 18px; color: #d4e0d8; }
+.lead { font-size: 19px; color: var(--ink); }
+strong { color: #fff; font-weight: 600; }
+a.inline { color: var(--green); text-decoration: none; border-bottom: 1px solid var(--green-deep); }
+
+/* ---- figure ---- */
+figure { margin: 26px 0; }
+figure img { width: 100%; max-width: 100%; display: block; border: 1px solid var(--line); border-radius: 10px; background: #000; }
+figcaption { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); margin-top: 10px; padding-left: 14px; border-left: 2px solid var(--line); }
+
+/* ---- terminal block ---- */
+.term { background: #060807; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 22px 0; }
+.term .bar { display: flex; align-items: center; gap: 7px; padding: 9px 13px; border-bottom: 1px solid var(--line); background: var(--bg-2); }
+.term .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.term .bar i:nth-child(1){ background:#ff5f56; } .term .bar i:nth-child(2){ background:#ffbd2e; } .term .bar i:nth-child(3){ background:#27c93f; }
+.term .bar span { font-family:'JetBrains Mono',monospace; font-size:12px; color: var(--ink-faint); margin-left: 8px; }
+.term pre { margin: 0; padding: 16px; font-family:'JetBrains Mono',monospace; font-size: 13px; line-height: 1.7; color: #cfe8d6; overflow-x: auto; }
+.term .cmd { color: var(--green); } .term .cmt { color: var(--ink-faint); } .term .out { color: var(--ink-dim); }
+
+/* ---- callout ---- */
+.note { border-left: 3px solid var(--green-deep); background: var(--panel); padding: 18px 20px; border-radius: 0 10px 10px 0; margin: 24px 0; }
+.note.warn { border-left-color: var(--amber); }
+.note.key { border-left-color: var(--green); }
+.note .t { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.04em; color: var(--ink-dim); margin-bottom:7px; }
+.note p:last-child { margin-bottom: 0; }
+
+/* ---- finding cards ---- */
+.find { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+.find .h { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--bg-2); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.find .h .nm { font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 16px; }
+.sev { font-family:'JetBrains Mono',monospace; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 5px; letter-spacing: 0.03em; }
+.sev.alta { background: rgba(255,93,93,0.14); color: var(--red); border: 1px solid rgba(255,93,93,0.3); }
+.sev.media { background: rgba(255,182,72,0.13); color: var(--amber); border: 1px solid rgba(255,182,72,0.3); }
+.sev.conf { background: var(--green-glow); color: var(--green); border: 1px solid rgba(57,255,92,0.3); }
+.find .b { padding: 16px 18px; }
+.find .b p { margin: 0; font-size: 15px; color: var(--ink-dim); }
+.find .tool { font-family:'JetBrains Mono',monospace; font-size: 11.5px; color: var(--ink-faint); margin-left: auto; }
+
+/* ---- evolution ---- */
+.evo { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 24px 0; }
+.evo .row { background: var(--bg-2); padding: 18px 20px; display: grid; grid-template-columns: 70px 1fr; gap: 16px; align-items: start; }
+.evo .v { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size: 20px; color: var(--green); }
+.evo .d { font-size: 15px; color: var(--ink-dim); }
+.evo .d b { color: var(--ink); }
+
+/* ---- timeline ---- */
+.tl { position: relative; margin: 30px 0; padding-left: 28px; }
+.tl::before { content:""; position:absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+.tl .step { position: relative; padding-bottom: 28px; }
+.tl .step:last-child { padding-bottom: 0; }
+.tl .step::before { content:""; position:absolute; left: -28px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--green-deep); }
+.tl .step.on::before { background: var(--green); box-shadow: 0 0 0 4px var(--green-glow); }
+.tl .step .st { font-family:'JetBrains Mono',monospace; font-size: 12px; color: var(--green); margin-bottom: 4px; }
+.tl .step .tt { font-family:'Space Grotesk',sans-serif; font-weight: 600; font-size: 17px; margin-bottom: 4px; }
+.tl .step .dd { font-size: 14.5px; color: var(--ink-dim); }
+
+/* ---- footer ---- */
+footer { border-top: 1px solid var(--line); padding: 48px 0 70px; }
+footer .sig { font-family:'JetBrains Mono',monospace; font-size: 15px; }
+footer .sig b { color: var(--green); }
+footer p { font-size: 14px; color: var(--ink-faint); margin-top: 12px; }
+.tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:12px; color: var(--ink-dim); border:1px solid var(--line); border-radius:6px; padding:4px 10px; margin: 4px 6px 4px 0; }
+
+@media (prefers-reduced-motion: reduce) { .cursor { animation: none; } html { scroll-behavior: auto; } }
+
+.hero::before { width: min(600px, 100%); }
+.back { color: var(--ink-dim); text-decoration: none; }
+.back:hover { color: var(--green); }
+nav .sig a { color: inherit; text-decoration: none; }
+
+/* ---- matriz de resultados ---- */
+.mx-wrap { overflow-x: auto; margin: 54px 0 0; border: 1px solid var(--line); border-radius: 12px; }
+.mx { width: 100%; min-width: 600px; border-collapse: collapse; }
+.mx th { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink-faint); text-align: left; padding: 12px 14px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+.mx td { padding: 0; border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); vertical-align: top; }
+.mx tr:last-child td { border-bottom: 0; }
+.mx td.rh { border-left: 0; padding: 14px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; background: var(--bg-2); white-space: nowrap; }
+.mx a { display: block; padding: 12px 14px; text-decoration: none; height: 100%; }
+.mx .st { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; }
+.mx .how { font-size: 13px; color: var(--ink-dim); margin-top: 4px; line-height: 1.4; }
+.mx .x { background: rgba(255,93,93,0.06); }
+.mx .x .st { color: var(--red); }
+.mx .ok { background: var(--green-glow); }
+.mx .ok .st { color: var(--green); }
+.mx a:hover { outline: 1px solid var(--green-deep); outline-offset: -1px; }
+.mx a:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+.mx-cap { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); margin-top: 10px; }
+
+/* ---- niveles ---- */
+.lvl { margin: 34px 0 0; padding-top: 6px; }
+.lvl h3 { margin-top: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lvl h3 .sev { font-size: 11px; }
+
+/* ---- tablas ---- */
+.tbl { overflow-x: auto; margin: 22px 0; border: 1px solid var(--line); border-radius: 10px; }
+.tbl table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 14.5px; }
+.tbl th { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--ink-faint); text-align: left; padding: 11px 14px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+.tbl td { padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--ink-dim); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.tbl .c { text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+.tbl .y { color: var(--green); } .tbl .p { color: var(--amber); } .tbl .n { color: var(--red); }
+.legend { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); margin: -8px 0 22px; }
+
+/* ---- código desplegable ---- */
+details.src { border: 1px solid var(--line); border-radius: 10px; margin: 18px 0 30px; background: var(--bg-2); }
+details.src summary { cursor: pointer; padding: 13px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); list-style: none; }
+details.src summary::-webkit-details-marker { display: none; }
+details.src summary::before { content: "+ "; color: var(--ink-faint); }
+details.src[open] summary::before { content: "− "; }
+details.src summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 8px; }
+details.src .src-body { padding: 0 16px 6px; }
+
+/* ---- riesgo ---- */
+.sev.crit { background: var(--red); color: #1a0505; border: 1px solid var(--red); }
+.risk .h .score { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; margin-left: auto; }
+.risk .vec { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
+
+.fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; margin: 26px 0; }
+.fig-grid figure { margin: 0 0 18px; }
+@media (max-width: 640px) { .fig-grid { grid-template-columns: 1fr; } }
+.stats.s3 { grid-template-columns: repeat(3,1fr); }
+
+.hero::before { width: min(600px, 100%); }
+
+/* ---- pestañas ---- */
+nav .wrap { gap: 20px; }
+nav .sig a { color: inherit; text-decoration: none; }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; height: 100%; align-items: stretch; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a { display: flex; align-items: center; white-space: nowrap; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+.tabs a:hover { color: var(--ink); }
+.tabs a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+.tabs a:focus-visible { outline: 2px solid var(--green); outline-offset: -4px; }
+@media (max-width: 640px) {
+  nav .wrap { flex-direction: column; align-items: stretch; height: auto; gap: 0; padding-top: 10px; }
+  nav .sig { font-size: 14px; }
+  .tabs { height: 42px; margin: 0 -12px; }
+}
+
+.view[hidden] { display: none; }
+figure img { height: auto; }
+
+/* ---- tarjetas de la portada ---- */
+.proj { list-style: none; margin: 0 0 30px; padding: 0; border-top: 1px solid var(--line); }
+.proj li { border-bottom: 1px solid var(--line); }
+.proj a { display: grid; grid-template-columns: 130px 1fr; gap: 24px; padding: 26px 8px; text-decoration: none; color: inherit; border-left: 2px solid transparent; transition: border-color .15s, background .15s; }
+.proj a:hover { border-left-color: var(--green); background: var(--bg-2); }
+.proj a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.proj .meta { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink-faint); padding-left: 10px; line-height: 1.9; }
+.proj .ttl { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.01em; line-height: 1.2; margin: 0 0 8px; color: var(--ink); }
+.proj a:hover .ttl { color: var(--green); }
+.proj .desc { font-size: 15.5px; color: var(--ink-dim); margin: 0 0 12px; }
+.proj .open { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--green); margin-top: 6px; display: inline-block; }
+@media (max-width: 640px) {
+  .proj a { grid-template-columns: 1fr; gap: 6px; padding: 22px 4px; }
+  .proj .meta { padding-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .tabs a, .proj a { transition: none; } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <div class="sig"><a href="#inicio">aketx<b>@</b>sec:<b>~</b>$</a></div>
+    <div class="tabs" role="navigation" aria-label="Prácticas"><a href="#inicio">Inicio</a><a href="#dvwa">DVWA · SQLi y XSS</a><a href="#ia-local">Escaneo con IA local</a></div>
+  </div>
+</nav>
+<div class="view" id="inicio" data-title="Portafolio de ciberseguridad">
+<header class="hero">
+  <div class="wrap">
+    <div class="prompt-line"><span class="c">$</span> whoami<span class="cursor"></span></div>
+    <h1>Aketx Herrero</h1>
+    <p class="sub">IT &amp; Security Administrator. Vengo de la monitorización de sistemas y redes y de la administración de entornos de dominio, y me estoy especializando en ciberseguridad.</p>
+    <div class="sig-name">Portafolio de laboratorios<span>Actualizado en noviembre de 2026</span></div>
+  </div>
+</header>
+
+<section id="inicio-sobre">
+  <div class="wrap">
+    <div class="sec-id">// qué hay aquí</div>
+    <h2>Laboratorios documentados de principio a fin</h2>
+    <p class="lead">Este portafolio reúne las prácticas que estoy haciendo en el Curso de Especialización en Ciberseguridad en Entornos de las Tecnologías de la Información y los proyectos que monto por mi cuenta.</p>
+    <p>Cada pestaña de arriba es un laboratorio completo: el entorno que desplegué, las pruebas que hice, las evidencias y, sobre todo, lo que no salió a la primera y cómo lo resolví. No son resúmenes de teoría: todo lo que aparece lo ejecuté yo y está respaldado con capturas.</p>
+    <p>Todas las pruebas se hicieron en entornos aislados y sobre aplicaciones diseñadas para practicar. Nada de esto se lanzó contra sistemas de terceros.</p>
+  </div>
+</section>
+
+<section id="inicio-metodo">
+  <div class="wrap">
+    <div class="sec-id">// cómo trabajo</div>
+    <h2>El mismo método en cada práctica</h2>
+    <div class="tl">
+      <div class="step on"><div class="st">paso 01</div><div class="tt">Entorno controlado</div><div class="dd">Despliegue reproducible (normalmente en contenedores) y aislado: el objetivo vulnerable nunca queda expuesto a la red.</div></div>
+      <div class="step on"><div class="st">paso 02</div><div class="tt">Probar de menos a más</div><div class="dd">Primero reconocer y escanear; después explotar a mano, y solo lo necesario para confirmar cada hallazgo.</div></div>
+      <div class="step on"><div class="st">paso 03</div><div class="tt">Entender el porqué</div><div class="dd">Leer el código o la configuración para explicar por qué funcionó el ataque, o por qué falló la defensa.</div></div>
+      <div class="step on"><div class="st">paso 04</div><div class="tt">Documentar y proponer</div><div class="dd">Evidencias, valoración del riesgo con estándares (OWASP, CVSS) y medidas que atacan la causa, no el síntoma.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="inicio-practicas">
+  <div class="wrap">
+    <div class="sec-id">// las prácticas</div>
+    <h2>Elige una práctica</h2>
+    <h3>Curso de especialización</h3>
+    <ul class="proj"><li><a href="#dvwa">
+  <div class="meta">oct–nov 2026</div>
+  <div>
+    <h4 class="ttl">Auditoría web de DVWA: SQL Injection y XSS</h4>
+    <p class="desc">SQLi, XSS reflejado y XSS almacenado en los cuatro niveles de seguridad de DVWA. Explotación, lectura del código de cada nivel, contraste con OWASP ASVS y puntuación con CVSS v3.1.</p>
+    <div><span class="tag">SQLi</span><span class="tag">XSS</span><span class="tag">DAST</span><span class="tag">SAST</span><span class="tag">OWASP ASVS</span><span class="tag">CVSS</span></div>
+    <span class="open">abrir la práctica</span>
+  </div>
+</a></li></ul>
+    <h3>Proyectos personales</h3>
+    <ul class="proj"><li><a href="#ia-local">
+  <div class="meta">nov 2026</div>
+  <div>
+    <h4 class="ttl">Escaneo web asistido por IA local</h4>
+    <p class="desc">Un modelo de IA corriendo en mi propia GPU, ZAP y Nuclei contra OWASP Juice Shop. La IA acelera el análisis; cada hallazgo lo verifiqué a mano.</p>
+    <div><span class="tag">OWASP ZAP</span><span class="tag">Nuclei</span><span class="tag">Ollama</span><span class="tag">Juice Shop</span><span class="tag">XSS</span></div>
+    <span class="open">abrir la práctica</span>
+  </div>
+</a></li></ul>
+  </div>
+</section>
+</div><div class="view" id="dvwa" data-title="Auditoría web de DVWA: SQLi y XSS" hidden>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="prompt-line"><span class="c">$</span> ./audit --target dvwa --vulns sqli,xss --levels all<span class="cursor"></span></div>
+    <h1>SQL Injection y XSS en DVWA, <span class="hl">nivel a nivel</span>.</h1>
+    <p class="sub">Exploté tres vulnerabilidades en los cuatro niveles de seguridad de DVWA y leí el código de cada uno para entender por qué caían. Solo un nivel resistió, y no por tener mejores filtros.</p>
+    <div class="sig-name">Aketx Herrero<span>Práctica del curso de especialización en ciberseguridad · Octubre–noviembre 2026</span></div>
+    
+<div class="mx-wrap">
+<table class="mx">
+<thead><tr><th>módulo / nivel</th><th>Low</th><th>Medium</th><th>High</th><th>Impossible</th></tr></thead>
+<tbody>
+<tr><td class="rh">SQL Injection</td>
+<td class="x"><a href="#dvwa-sqli-low"><div class="st">EXPLOTADO</div><div class="how">UNION directo</div></a></td>
+<td class="x"><a href="#dvwa-sqli-medium"><div class="st">EXPLOTADO</div><div class="how">Parámetro sin comillas, vía DevTools</div></a></td>
+<td class="x"><a href="#dvwa-sqli-high"><div class="st">EXPLOTADO</div><div class="how">El # anula el LIMIT 1</div></a></td>
+<td class="ok"><a href="#dvwa-sqli-impossible"><div class="st">RESISTE</div><div class="how">Consulta preparada (PDO)</div></a></td></tr>
+<tr><td class="rh">XSS reflejado</td>
+<td class="x"><a href="#dvwa-xssr-low"><div class="st">EXPLOTADO</div><div class="how">&lt;script&gt; directo</div></a></td>
+<td class="x"><a href="#dvwa-xssr-medium"><div class="st">EXPLOTADO</div><div class="how">&lt;img onerror&gt; esquiva la lista negra</div></a></td>
+<td class="x"><a href="#dvwa-xssr-high"><div class="st">EXPLOTADO</div><div class="how">El regex no cubre onerror</div></a></td>
+<td class="ok"><a href="#dvwa-xssr-impossible"><div class="st">RESISTE</div><div class="how">htmlspecialchars()</div></a></td></tr>
+<tr><td class="rh">XSS almacenado</td>
+<td class="x"><a href="#dvwa-xsss-low"><div class="st">EXPLOTADO</div><div class="how">&lt;script&gt; persistido</div></a></td>
+<td class="x"><a href="#dvwa-xsss-medium"><div class="st">EXPLOTADO</div><div class="how">Campo Name + maxlength ampliado</div></a></td>
+<td class="x"><a href="#dvwa-xsss-high"><div class="st">EXPLOTADO</div><div class="how">Misma asimetría entre campos</div></a></td>
+<td class="ok"><a href="#dvwa-xsss-impossible"><div class="st">RESISTE</div><div class="how">Salida codificada en ambos campos</div></a></td></tr>
+</tbody></table></div>
+<div class="mx-cap">Pulsa una celda para ir a la prueba.</div>
+
+  </div>
+</header>
+
+<section id="dvwa-intro">
+  <div class="wrap">
+    <div class="sec-id">// 00 · el reto</div>
+    <h2>No basta con que el exploit salte</h2>
+    <p class="lead">El objetivo era auditar dos de las familias de vulnerabilidades web más habituales y entender por qué cada defensa funciona o no.</p>
+    <p>Combiné tres enfoques sobre los módulos <strong>SQL Injection</strong>, <strong>XSS reflejado</strong> y <strong>XSS almacenado</strong> de DVWA: explotación en ejecución (<strong>DAST</strong>), lectura del código PHP de cada nivel (<strong>SAST</strong>) y verificación frente a los controles de <strong>OWASP ASVS</strong>. Probé los cuatro niveles de seguridad (Low, Medium, High e Impossible) para ver cómo evolucionan las defensas.</p>
+    <p>El resultado: Low, Medium y High caen en las tres vulnerabilidades. Impossible es el único que aguanta, porque es el único que corrige la causa raíz en lugar de parchear síntomas.</p>
+    <p>Quedaron fuera del alcance el resto de módulos de DVWA, los ataques de denegación de servicio y la infraestructura subyacente.</p>
+  </div>
+</section>
+
+<section id="dvwa-lab">
+  <div class="wrap">
+    <div class="sec-id">// 01 · el laboratorio</div>
+    <h2>Reproducible en dos comandos</h2>
+    <p>Desplegué DVWA con <strong>Docker</strong> sobre WSL2 (Ubuntu), desde el repositorio oficial y con su propio <span class="mono">docker-compose</span>. Lo preferí a una instalación manual tipo XAMPP porque es reproducible y queda aislado en contenedores: si algo se rompe, se reinicia desde cero sin tocar el sistema anfitrión.</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>despliegue</span></div><pre><span class="cmd">git clone https://github.com/digininja/DVWA.git
+cd DVWA
+docker compose up -d
+docker compose ps</span></pre></div>
+    <p>El compose levanta dos contenedores: la aplicación (PHP y Apache) y la base de datos (MariaDB). El servicio web queda publicado en <span class="mono">127.0.0.1:4280</span>, solo accesible desde el propio equipo.</p>
+    <figure><img src="dvwa/img/01_docker_up.png" width="1190" height="423" alt="Despliegue con Docker Compose: el puerto web queda enlazado a 127.0.0.1, no a todas las interfaces." loading="lazy"><figcaption>Despliegue con Docker Compose: el puerto web queda enlazado a 127.0.0.1, no a todas las interfaces.</figcaption></figure>
+    <div class="note key">
+      <div class="t">CONTROL DEL LABORATORIO</div>
+      <p>DVWA es insegura a propósito. Enlazarla a la interfaz de loopback y no a <span class="mono">0.0.0.0</span> forma parte del propio control de seguridad: nadie en la red puede alcanzarla.</p>
+    </div>
+    <p>Después verifiqué los requisitos en <span class="mono">setup.php</span>, creé la base de datos con <em>Create / Reset Database</em> y entré con las credenciales por defecto. Los avisos en rojo de <span class="mono">setup.php</span> (reCAPTCHA y <span class="mono">allow_url_include</span>) afectan a módulos fuera de mi alcance, así que no condicionaban las pruebas.</p>
+    <div class="fig-grid">
+    <figure><img src="dvwa/img/02_setup_verde.png" width="1345" height="971" alt="Verificación de requisitos en setup.php." loading="lazy"><figcaption>Verificación de requisitos en setup.php.</figcaption></figure>
+    <figure><img src="dvwa/img/03_crear_bbdd.png" width="1189" height="448" alt="Base de datos creada: DVWA redirige al login." loading="lazy"><figcaption>Base de datos creada: DVWA redirige al login.</figcaption></figure>
+    <figure><img src="dvwa/img/04_dashboard.png" width="1312" height="994" alt="Acceso a la aplicación." loading="lazy"><figcaption>Acceso a la aplicación.</figcaption></figure>
+    <figure><img src="dvwa/img/05_dvwa_security.png" width="1324" height="909" alt="Selector de nivel: decide qué fichero fuente carga cada módulo." loading="lazy"><figcaption>Selector de nivel: decide qué fichero fuente carga cada módulo.</figcaption></figure>
+    </div>
+    <h3>Herramientas</h3>
+    <p>Docker y Docker Compose para el entorno; el navegador con <strong>DevTools (F12)</strong> para lanzar los payloads y, cuando la interfaz lo impedía, modificar la petición a mano; el botón <em>View Source</em> de DVWA para el análisis estático; y OWASP Top 10, OWASP ASVS 4.0.3 y CVSS v3.1 como marcos de referencia.</p>
+    <p>No usé un proxy tipo Burp porque prefería no tocar la configuración de proxy del sistema en ese equipo. DevTools me daba la misma evidencia sin alterar nada del entorno.</p>
+  </div>
+</section>
+
+<section id="dvwa-metodo">
+  <div class="wrap">
+    <div class="sec-id">// 02 · metodología</div>
+    <h2>Explotar, leer el código y contrastar</h2>
+    <div class="tl">
+      <div class="step on"><div class="st">paso 01</div><div class="tt">DAST: explotación nivel a nivel</div><div class="dd">El mismo módulo en Low, Medium, High e Impossible, ajustando el payload cuando la defensa lo bloqueaba.</div></div>
+      <div class="step on"><div class="st">paso 02</div><div class="tt">SAST: seguir el dato en el código</div><div class="dd">Desde su origen (<span class="mono">$_GET</span>, <span class="mono">$_POST</span>, <span class="mono">$_REQUEST</span>, <span class="mono">$_SESSION</span>) hasta la consulta SQL o la salida HTML, viendo qué control añade cada nivel.</div></div>
+      <div class="step on"><div class="st">paso 03</div><div class="tt">Contraste con OWASP ASVS</div><div class="dd">Qué controles del capítulo V5 cumple o incumple cada nivel.</div></div>
+      <div class="step on"><div class="st">paso 04</div><div class="tt">Riesgo y remediación</div><div class="dd">Puntuación con CVSS v3.1 y medidas que atacan la causa, no el síntoma.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-sqli">
+  <div class="wrap">
+    <div class="sec-id">// 03 · explotación</div>
+    <h2>SQL Injection</h2>
+    <p>El campo <em>User ID</em> acaba dentro de una consulta SQL. La pregunta en cada nivel era la misma: ¿puedo cambiar la estructura de esa consulta?</p>
+
+    <div class="lvl" id="dvwa-sqli-low"><h3>Low <span class="sev alta">EXPLOTADO</span></h3>
+    <p>La entrada se concatena directamente en la consulta, sin ningún filtro. Una inyección UNION basta para volcar usuarios y hashes:</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · User ID</span></div><pre><span class="cmd">1&#x27; UNION SELECT user, password FROM users#</span></pre></div>
+    <p>Devolvió los cinco usuarios con sus hashes. Un detalle que anoté: <span class="mono">admin</span> y <span class="mono">smithy</span> tenían el mismo hash, <span class="mono">5f4dcc3b5aa765d61d8327deb882cf99</span>, que es el MD5 de la cadena “password”. Un MD5 sin sal de una contraseña débil se rompe al instante con cualquier diccionario.</p>
+    <figure><img src="dvwa/img/sqli_low.png" width="1335" height="914" alt="SQLi Low: volcado completo de credenciales." loading="lazy"><figcaption>SQLi Low: volcado completo de credenciales.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-sqli-medium"><h3>Medium <span class="sev alta">EXPLOTADO</span></h3>
+    <p>Aquí llegó el primer obstáculo real. El campo pasa a ser un desplegable (valores del 1 al 5, enviados por POST) y el código aplica <span class="mono">mysqli_real_escape_string()</span>. Parece protegido.</p>
+    <p>Pero el parámetro se usa <strong>sin comillas</strong> en la consulta (<span class="mono">WHERE user_id = $id</span>), porque es numérico. Si no necesito ninguna comilla para inyectar, escaparlas no sirve de nada. Quedaba saltarse el desplegable: edité el valor de una <span class="mono">&lt;option&gt;</span> desde DevTools e inyecté sin comilla inicial.</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · valor de la option</span></div><pre><span class="cmd">1 UNION SELECT user,password FROM users#</span></pre></div>
+    <p>Mismo volcado que en Low. La defensa cae porque ataca el síntoma equivocado en un contexto donde no aplica.</p>
+    <figure><img src="dvwa/img/sqli_medium.png" width="1862" height="858" alt="SQLi Medium: inyección por el parámetro POST editando la option desde DevTools." loading="lazy"><figcaption>SQLi Medium: inyección por el parámetro POST editando la option desde DevTools.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-sqli-high"><h3>High <span class="sev alta">EXPLOTADO</span></h3>
+    <p>La entrada se introduce en una ventana emergente aparte, viaja por <span class="mono">$_SESSION</span> y la consulta lleva un <span class="mono">LIMIT 1</span> para devolver una sola fila. Pero el dato sigue sin sanearse, y el <span class="mono">#</span> del final del payload comenta el resto de la consulta, <span class="mono">LIMIT</span> incluido.</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · ventana de sesión</span></div><pre><span class="cmd">1&#x27; UNION SELECT user,password FROM users#</span></pre></div>
+    <p>Volcado completo otra vez. Separar la entrada en otra ventana complica automatizar el ataque, pero no lo impide.</p>
+    <figure><img src="dvwa/img/sqli_high.png" width="1492" height="942" alt="SQLi High: la entrada por sesión no se sanea y el # anula el LIMIT 1." loading="lazy"><figcaption>SQLi High: la entrada por sesión no se sanea y el # anula el LIMIT 1.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-sqli-impossible"><h3>Impossible <span class="sev conf">RESISTE</span></h3>
+    <p>El mismo payload no devuelve nada. El módulo usa consultas preparadas con PDO, conversión a entero y token anti-CSRF: el payload se trata como un dato literal, nunca como código SQL.</p>
+    <figure><img src="dvwa/img/sqli_impossible.png" width="1318" height="496" alt="SQLi Impossible: inyección neutralizada por la consulta preparada." loading="lazy"><figcaption>SQLi Impossible: inyección neutralizada por la consulta preparada.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-xss-r">
+  <div class="wrap">
+    <div class="sec-id">// 04 · explotación</div>
+    <h2>XSS reflejado</h2>
+    <p>El parámetro <span class="mono">name</span> se devuelve en la página. Si se pinta sin codificar, cualquier etiqueta que meta ahí la interpreta el navegador.</p>
+
+    <div class="lvl" id="dvwa-xssr-low"><h3>Low <span class="sev alta">EXPLOTADO</span></h3>
+    <p>Se refleja tal cual. Ejecución directa:</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · name</span></div><pre><span class="cmd">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></pre></div>
+    <p>El <span class="mono">alert</span> muestra la cookie de sesión (<span class="mono">PHPSESSID</span>). En un ataque real ese valor se enviaría a un servidor del atacante para secuestrar la sesión.</p>
+    <figure><img src="dvwa/img/xssr_low.png" width="1219" height="289" alt="XSS reflejado Low: ejecución de JavaScript con acceso a la cookie de sesión." loading="lazy"><figcaption>XSS reflejado Low: ejecución de JavaScript con acceso a la cookie de sesión.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xssr-medium"><h3>Medium <span class="sev alta">EXPLOTADO</span></h3>
+    <p>El código aplica <span class="mono">str_replace(&#x27;&lt;script&gt;&#x27;, &#x27;&#x27;)</span>, que elimina solo esa cadena exacta. Lo esquivé con una etiqueta que no la contiene:</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · name</span></div><pre><span class="cmd">&lt;img src=x onerror=alert(document.cookie)&gt;</span></pre></div>
+    <p>El <span class="mono">&lt;img&gt;</span> con un <span class="mono">src</span> inválido dispara <span class="mono">onerror</span>, que ejecuta el JavaScript igual. Una lista negra de una sola etiqueta deja fuera todos los demás vectores.</p>
+    <figure><img src="dvwa/img/xssr_medium.png" width="1347" height="316" alt="XSS reflejado Medium: otro vector esquiva la lista negra." loading="lazy"><figcaption>XSS reflejado Medium: otro vector esquiva la lista negra.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xssr-high"><h3>High <span class="sev alta">EXPLOTADO</span></h3>
+    <p>El filtro pasa a ser un regex que elimina cualquier variante de la palabra “script”, con caracteres intercalados o mayúsculas. Es más estricto contra <span class="mono">&lt;script&gt;</span>, pero no toca otras etiquetas ni codifica la salida. El mismo <span class="mono">&lt;img onerror&gt;</span> funciona:</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · name</span></div><pre><span class="cmd">&lt;img src=x onerror=alert(document.cookie)&gt;</span></pre></div>
+    <figure><img src="dvwa/img/xssr_high.png" width="1430" height="387" alt="XSS reflejado High: el filtro de “script” no cubre el evento onerror." loading="lazy"><figcaption>XSS reflejado High: el filtro de “script” no cubre el evento onerror.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xssr-impossible"><h3>Impossible <span class="sev conf">RESISTE</span></h3>
+    <p>El payload aparece como texto plano. El código usa <span class="mono">htmlspecialchars()</span>, que convierte <span class="mono">&lt;</span> y <span class="mono">&gt;</span> en entidades HTML: el navegador lo pinta como texto en vez de interpretarlo como etiqueta.</p>
+    <figure><img src="dvwa/img/xssr_impossible.png" width="1404" height="420" alt="XSS reflejado Impossible: salida codificada con htmlspecialchars()." loading="lazy"><figcaption>XSS reflejado Impossible: salida codificada con htmlspecialchars().</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-xss-s">
+  <div class="wrap">
+    <div class="sec-id">// 05 · explotación</div>
+    <h2>XSS almacenado</h2>
+    <p>Las pruebas van sobre el libro de visitas: el payload se guarda en la base de datos y se ejecuta cada vez que alguien carga la página. Es más peligroso que el reflejado porque no hace falta engañar a la víctima con un enlace.</p>
+
+    <div class="lvl" id="dvwa-xsss-low"><h3>Low <span class="sev alta">EXPLOTADO</span></h3>
+    <p>Sin codificación de salida. El script se guarda y se ejecuta en cada carga:</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · Message</span></div><pre><span class="cmd">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></pre></div>
+    <figure><img src="dvwa/img/xsss_low.png" width="1310" height="319" alt="XSS almacenado Low: script persistido que se ejecuta en cada visita." loading="lazy"><figcaption>XSS almacenado Low: script persistido que se ejecuta en cada visita.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xsss-medium"><h3>Medium <span class="sev alta">EXPLOTADO</span></h3>
+    <p>El nivel más entretenido. La protección es <strong>asimétrica</strong>: el campo <em>Message</em> se sanea bien, pero <em>Name</em> solo tiene la lista negra de <span class="mono">&lt;script&gt;</span>. El ataque tenía que ir por <em>Name</em>.</p>
+    <p>El primer intento no hizo nada: el campo tiene un <span class="mono">maxlength</span> corto en el HTML que recortaba la carga. En DevTools localicé el <span class="mono">&lt;input name=&quot;txtName&quot;&gt;</span>, subí su <span class="mono">maxlength</span> de 10 a 100 y volví a enviar.</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · Name</span></div><pre><span class="cmd">&lt;img src=x onerror=alert(document.cookie)&gt;</span></pre></div>
+    <p>El payload quedó almacenado y se ejecutó.</p>
+    <figure><img src="dvwa/img/xsss_medium_f12.png" width="1904" height="447" alt="Ampliación del maxlength del campo Name desde DevTools." loading="lazy"><figcaption>Ampliación del maxlength del campo Name desde DevTools.</figcaption></figure>
+    <figure><img src="dvwa/img/xsss_medium.png" width="1215" height="411" alt="XSS almacenado Medium: ejecución del payload inyectado por el campo Name." loading="lazy"><figcaption>XSS almacenado Medium: ejecución del payload inyectado por el campo Name.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xsss-high"><h3>High <span class="sev alta">EXPLOTADO</span></h3>
+    <p>Misma asimetría: <em>Name</em> pasa a tener el regex anti-“script”, pero sigue sin codificación de salida. Volví a ampliar el <span class="mono">maxlength</span> y el <span class="mono">&lt;img onerror&gt;</span> entró igual.</p>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>payload · Name</span></div><pre><span class="cmd">&lt;img src=x onerror=alert(document.cookie)&gt;</span></pre></div>
+    <figure><img src="dvwa/img/xsss_high.png" width="1290" height="332" alt="XSS almacenado High: el regex de “script” no cubre onerror." loading="lazy"><figcaption>XSS almacenado High: el regex de “script” no cubre onerror.</figcaption></figure>
+    </div>
+
+    <div class="lvl" id="dvwa-xsss-impossible"><h3>Impossible <span class="sev conf">RESISTE</span></h3>
+    <p>Los dos campos se codifican con <span class="mono">htmlspecialchars()</span>. El payload se guardó como texto escapado y no se ejecutó.</p>
+    <p>Como en el libro de visitas seguían las entradas de los niveles anteriores, la pantalla final sirve de comparación directa: arriba los payloads que sí se ejecutaron y abajo el de Impossible, guardado como <span class="mono">&lt;img src=x onerror=...&gt;</span>.</p>
+    <figure><img src="dvwa/img/xsss_impossible.png" width="1332" height="576" alt="XSS almacenado Impossible: la entrada se guarda y se muestra escapada." loading="lazy"><figcaption>XSS almacenado Impossible: la entrada se guarda y se muestra escapada.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-sast">
+  <div class="wrap">
+    <div class="sec-id">// 06 · análisis de código</div>
+    <h2>Qué añade cada nivel, y por qué no basta</h2>
+    <p>Revisé el código PHP de cada módulo y nivel con el <em>View Source</em> de DVWA, siguiendo el dato desde que entra hasta que llega a una consulta o a la página.</p>
+
+    <h3>SQL Injection</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Nivel</th><th>Defensa en el código</th><th>Por qué cae (o aguanta)</th></tr></thead>
+      <tbody>
+        <tr><td>Low</td><td>Ninguna. <span class="mono">$_REQUEST[&#x27;id&#x27;]</span> concatenado directamente en la consulta.</td><td>Control total sobre la consulta.</td></tr>
+        <tr><td>Medium</td><td><span class="mono">mysqli_real_escape_string()</span> sobre <span class="mono">$id</span>.</td><td>El parámetro va sin comillas (numérico): escapar comillas no aporta nada.</td></tr>
+        <tr><td>High</td><td><span class="mono">$_SESSION[&#x27;id&#x27;]</span> y <span class="mono">LIMIT 1</span>.</td><td>Sigue concatenado sin sanear; el <span class="mono">#</span> comenta el <span class="mono">LIMIT</span>.</td></tr>
+        <tr><td>Impossible</td><td>PDO con <span class="mono">bindParam(&#x27;:id&#x27;, $id, PDO::PARAM_INT)</span>, <span class="mono">is_numeric()</span>, <span class="mono">intval()</span>, token anti-CSRF y comprobación de fila única.</td><td>El dato viaja como parámetro vinculado, nunca como código.</td></tr>
+      </tbody></table></div>
+    <details class="src"><summary>Ver el código de los cuatro niveles</summary><div class="src-body"><figure><img src="dvwa/img/sast_sqli_low.png" width="1546" height="835" alt="SQLi Low: concatenación directa." loading="lazy"><figcaption>SQLi Low: concatenación directa.</figcaption></figure><figure><img src="dvwa/img/sast_sqli_medium.png" width="1489" height="870" alt="SQLi Medium: escape de comillas sobre un parámetro numérico sin comillas." loading="lazy"><figcaption>SQLi Medium: escape de comillas sobre un parámetro numérico sin comillas.</figcaption></figure><figure><img src="dvwa/img/sast_sqli_high.png" width="848" height="794" alt="SQLi High: entrada por $_SESSION y LIMIT 1." loading="lazy"><figcaption>SQLi High: entrada por $_SESSION y LIMIT 1.</figcaption></figure><figure><img src="dvwa/img/sast_sqli_impossible.png" width="823" height="945" alt="SQLi Impossible: consulta preparada con PDO." loading="lazy"><figcaption>SQLi Impossible: consulta preparada con PDO.</figcaption></figure></div></details>
+
+    <h3>XSS reflejado</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Nivel</th><th>Defensa en el código</th><th>Por qué cae (o aguanta)</th></tr></thead>
+      <tbody>
+        <tr><td>Low</td><td>Ninguna: <span class="mono">echo</span> directo de <span class="mono">$_GET[&#x27;name&#x27;]</span>, y además la cabecera <span class="mono">X-XSS-Protection: 0</span>.</td><td>Salida sin codificar; incluso desactiva el filtro XSS del navegador.</td></tr>
+        <tr><td>Medium</td><td><span class="mono">str_replace(&#x27;&lt;script&gt;&#x27;, &#x27;&#x27;)</span>.</td><td>Lista negra de un único patrón; no cubre <span class="mono">&lt;img&gt;</span>, eventos ni mayúsculas.</td></tr>
+        <tr><td>High</td><td><span class="mono">preg_replace</span> que elimina variantes de “script”.</td><td>Filtra una palabra, no codifica la salida; <span class="mono">onerror</span> la esquiva.</td></tr>
+        <tr><td>Impossible</td><td><span class="mono">htmlspecialchars()</span> y token anti-CSRF.</td><td>Codificación de salida: el payload se pinta como texto.</td></tr>
+      </tbody></table></div>
+    <details class="src"><summary>Ver el código de los cuatro niveles</summary><div class="src-body"><figure><img src="dvwa/img/sast_xssr_low.png" width="651" height="252" alt="XSS reflejado Low: echo directo de $_GET." loading="lazy"><figcaption>XSS reflejado Low: echo directo de $_GET.</figcaption></figure><figure><img src="dvwa/img/sast_xssr_medium.png" width="444" height="282" alt="XSS reflejado Medium: str_replace de &lt;script&gt;." loading="lazy"><figcaption>XSS reflejado Medium: str_replace de &lt;script&gt;.</figcaption></figure><figure><img src="dvwa/img/sast_xssr_high.png" width="571" height="277" alt="XSS reflejado High: regex contra “script”." loading="lazy"><figcaption>XSS reflejado High: regex contra “script”.</figcaption></figure><figure><img src="dvwa/img/sast_xssr_impossible.png" width="536" height="345" alt="XSS reflejado Impossible: htmlspecialchars()." loading="lazy"><figcaption>XSS reflejado Impossible: htmlspecialchars().</figcaption></figure></div></details>
+
+    <h3>XSS almacenado</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Nivel</th><th>Defensa en el código</th><th>Por qué cae (o aguanta)</th></tr></thead>
+      <tbody>
+        <tr><td>Low</td><td><span class="mono">trim</span>, <span class="mono">stripslashes</span>, <span class="mono">mysqli_real_escape_string</span>.</td><td>Todo protege la consulta SQL, nada la salida HTML.</td></tr>
+        <tr><td>Medium</td><td><em>Message</em>: <span class="mono">htmlspecialchars</span> y <span class="mono">strip_tags</span>. <em>Name</em>: solo <span class="mono">str_replace(&#x27;&lt;script&gt;&#x27;)</span>.</td><td>Protección asimétrica: se entra por el campo débil.</td></tr>
+        <tr><td>High</td><td><em>Message</em> codificado; <em>Name</em> con regex anti-“script”.</td><td>Misma asimetría; el regex no cubre <span class="mono">onerror</span>.</td></tr>
+        <tr><td>Impossible</td><td><span class="mono">htmlspecialchars()</span> en ambos campos, PDO y token anti-CSRF.</td><td>Codificación en los dos campos y datos separados del código.</td></tr>
+      </tbody></table></div>
+    <details class="src"><summary>Ver el código de los cuatro niveles</summary><div class="src-body"><figure><img src="dvwa/img/sast_xsss_low.png" width="1681" height="399" alt="XSS almacenado Low: funciones orientadas a SQL, sin codificación HTML." loading="lazy"><figcaption>XSS almacenado Low: funciones orientadas a SQL, sin codificación HTML.</figcaption></figure><figure><img src="dvwa/img/sast_xsss_medium.png" width="1703" height="417" alt="XSS almacenado Medium: Message bien protegido, Name con lista negra." loading="lazy"><figcaption>XSS almacenado Medium: Message bien protegido, Name con lista negra.</figcaption></figure><figure><img src="dvwa/img/sast_xsss_high.png" width="1711" height="423" alt="XSS almacenado High: Name con regex anti-“script”." loading="lazy"><figcaption>XSS almacenado High: Name con regex anti-“script”.</figcaption></figure><figure><img src="dvwa/img/sast_xsss_impossible.png" width="1722" height="516" alt="XSS almacenado Impossible: htmlspecialchars() en ambos campos." loading="lazy"><figcaption>XSS almacenado Impossible: htmlspecialchars() en ambos campos.</figcaption></figure></div></details>
+
+    <div class="note key">
+      <div class="t">POR QUÉ IMPOSSIBLE SÍ ES SEGURO</div>
+      <p>No tiene mejores filtros: cambia el enfoque. En SQL separa los datos de la lógica con consultas preparadas, así que la entrada nunca altera la estructura de la consulta. En HTML codifica la salida, así que la entrada nunca se convierte en una etiqueta ejecutable. Y lo hace de forma consistente en todos los campos, reforzado con validación de tipo y tokens anti-CSRF. Los niveles intermedios intentan adivinar y bloquear lo malo; Impossible construye bien lo bueno.</p>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-asvs">
+  <div class="wrap">
+    <div class="sec-id">// 07 · estándar</div>
+    <h2>Contra OWASP ASVS</h2>
+    <p>Los hallazgos caen en el capítulo <strong>V5 (validación, sanitización y codificación)</strong> de OWASP ASVS 4.0.3.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Control</th><th>Requisito</th><th class="c">Low</th><th class="c">Medium</th><th class="c">High</th><th class="c">Impossible</th></tr></thead>
+      <tbody>
+        <tr><td>V5.1.3</td><td>Validación positiva de la entrada (lista blanca)</td><td class="c n">✗</td><td class="c p">≈</td><td class="c p">≈</td><td class="c y">✓</td></tr>
+        <tr><td>V5.2</td><td>Sanitización de datos no confiables</td><td class="c n">✗</td><td class="c p">≈</td><td class="c p">≈</td><td class="c y">✓</td></tr>
+        <tr><td>V5.3.3</td><td>Codificación de salida según el contexto (XSS)</td><td class="c n">✗</td><td class="c n">✗</td><td class="c n">✗</td><td class="c y">✓</td></tr>
+        <tr><td>V5.3.4</td><td>Consultas parametrizadas (SQLi)</td><td class="c n">✗</td><td class="c n">✗</td><td class="c n">✗</td><td class="c y">✓</td></tr>
+      </tbody></table></div>
+    <div class="legend">✓ cumple · ≈ parcial (la medida existe pero se esquiva) · ✗ incumple</div>
+    <p>Los dos controles que de verdad cierran las vulnerabilidades, V5.3.3 y V5.3.4, solo se cumplen en Impossible. Medium y High como mucho cumplen a medias la sanitización.</p>
+  </div>
+</section>
+
+<section id="dvwa-riesgo">
+  <div class="wrap">
+    <div class="sec-id">// 08 · riesgo</div>
+    <h2>Cuánto importa cada hallazgo</h2>
+    <p>Valoración con CVSS v3.1 sobre la configuración vulnerable (Low a High). Aunque el laboratorio corría en local, puntúo la aplicación como si estuviera accesible: se valora la vulnerabilidad, no dónde está alojada.</p>
+    <div class="find risk">
+      <div class="h"><span class="sev crit">CRÍTICO</span><span class="nm">SQL Injection</span><span class="score">9.8</span></div>
+      <div class="b"><span class="vec">AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</span><p>Lectura completa de la base de datos, incluidas las credenciales, y capacidad de alterarla.</p></div>
+    </div>
+    <div class="find risk">
+      <div class="h"><span class="sev alta">ALTO</span><span class="nm">XSS almacenado</span><span class="score">8.7</span></div>
+      <div class="b"><span class="vec">AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N</span><p>Persistente: afecta a cualquiera que visite la página, sin necesidad de enlace malicioso.</p></div>
+    </div>
+    <div class="find risk">
+      <div class="h"><span class="sev media">MEDIO</span><span class="nm">XSS reflejado</span><span class="score">6.1</span></div>
+      <div class="b"><span class="vec">AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N</span><p>Requiere que la víctima abra un enlace preparado, pero permite robar la sesión.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-notas">
+  <div class="wrap">
+    <div class="sec-id">// 09 · notas de analista</div>
+    <h2>Lo que no salió a la primera</h2>
+    <p>Lo que más me aportó este laboratorio no fueron los exploits que funcionaron a la primera, sino los que no.</p>
+    <div class="note">
+      <div class="t">EL ESCAPE QUE NO ESCAPABA NADA · SQLI MEDIUM</div>
+      <p>Ver <span class="mono">mysqli_real_escape_string()</span> en el código me hizo dudar de si era explotable. La clave estuvo en mirar cómo se usaba el parámetro: al ir sin comillas, escapar comillas es irrelevante. Una función de seguridad vale según el contexto donde se aplica, no por aparecer en el código.</p>
+    </div>
+    <div class="note">
+      <div class="t">UN CARÁCTER CONTRA EL LIMIT 1 · SQLI HIGH</div>
+      <p>Limitar a una fila parecía razonable, pero el <span class="mono">#</span> al final del payload comenta el resto de la consulta original. Una mitigación que no ataca la causa raíz se neutraliza con un solo carácter.</p>
+    </div>
+    <div class="note">
+      <div class="t">EL MAXLENGTH QUE CORTABA EL PAYLOAD · XSS ALMACENADO MEDIUM</div>
+      <p>El ataque por <em>Name</em> no hacía nada hasta que vi que el HTML recortaba la carga. Ampliar el <span class="mono">maxlength</span> desde DevTools lo resolvió. Las restricciones del lado del cliente son cosméticas: se saltan en segundos.</p>
+    </div>
+    <div class="note">
+      <div class="t">DOS CAMPOS, DOS NIVELES DE PROTECCIÓN · XSS ALMACENADO</div>
+      <p><em>Message</em> estaba bien protegido y <em>Name</em>, en el mismo formulario, solo tenía una lista negra. Descubrir esa asimetría orientó el ataque. Es un fallo muy realista: protecciones aplicadas de forma inconsistente a lo largo de una aplicación.</p>
+    </div>
+    <div class="note">
+      <div class="t">HASHES IGUALES, CONTRASEÑAS IGUALES · SQLI LOW</div>
+      <p><span class="mono">admin</span> y <span class="mono">smithy</span> compartían hash MD5, el de “password”. Un volcado dice más que una lista de hashes: las coincidencias y los algoritmos débiles indican lo rápido que caería todo en un ataque real.</p>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-remediacion">
+  <div class="wrap">
+    <div class="sec-id">// 10 · remediación</div>
+    <h2>Cómo se cierra</h2>
+    <div class="evo">
+      <div class="row"><div class="v">SQLi</div><div class="d"><b>Consultas parametrizadas en todo acceso a datos.</b> Es la única medida que corrige la causa raíz. Se refuerza con validación de tipo y mínimo privilegio en la cuenta de la base de datos.</div></div>
+      <div class="row"><div class="v">XSS</div><div class="d"><b>Codificación de salida según el contexto en todos los puntos donde se imprime un dato del usuario</b>, sin asimetrías entre campos. Se refuerza con Content Security Policy y cookies <span class="mono">HttpOnly</span> y <span class="mono">SameSite</span>.</div></div>
+      <div class="row"><div class="v">Todo</div><div class="d"><b>Tokens anti-CSRF, cabeceras de seguridad y SAST/DAST dentro del ciclo de desarrollo</b>, en lugar de auditar solo al final.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="dvwa-aprendizajes">
+  <div class="wrap">
+    <div class="sec-id">// 11 · aprendizajes</div>
+    <h2>Lo que me llevo</h2>
+    <p class="lead">Filtrar lo malo no es lo mismo que construir lo bueno.</p>
+    <p>Medium y High fallan siempre por lo mismo: intentan reconocer y bloquear patrones concretos (una palabra, un carácter, una etiqueta) y siempre queda un vector fuera de la lista. Impossible tiene un diseño distinto, en el que la entrada del usuario nunca puede cambiar la estructura de una consulta ni convertirse en código.</p>
+    <p>En lo práctico, encadené el ciclo completo de una auditoría: entorno reproducible, explotación controlada, lectura del código para entender el porqué, puntuación con CVSS, contraste con un estándar y remediación. Y me acostumbré a no quedarme en “el exploit salió”, sino en por qué salió y qué lo habría impedido.</p>
+    <h3>Stack utilizado</h3>
+    <div>
+      <span class="tag">DVWA</span><span class="tag">Docker Compose</span><span class="tag">WSL2 / Ubuntu</span><span class="tag">PHP · MariaDB</span><span class="tag">Chrome DevTools</span><span class="tag">OWASP ASVS 4.0.3</span><span class="tag">OWASP Top 10</span><span class="tag">CVSS v3.1</span>
+    </div>
+  </div>
+</section>
+
+</div><div class="view" id="ia-local" data-title="Escaneo web asistido por IA local" hidden>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="prompt-line"><span class="c">$</span> ./deploy-lab --local --gpu --ai-assisted<span class="cursor"></span></div>
+    <h1>Escaneo web asistido por <span class="hl">IA local</span>, de principio a fin.</h1>
+    <p class="sub">Monté un laboratorio de seguridad web con un modelo de IA corriendo en local, lo validé contra una aplicación vulnerable y documenté cada paso. La IA acelera; el criterio lo pongo yo.</p>
+    <div class="sig-name">Aketx Herrero<span>Proyecto personal · Noviembre 2026</span></div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">100%</div><div class="l">en local, sin salir a internet</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">escáneres: ZAP + Nuclei</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">XSS explotado a mano</div></div>
+      <div class="stat"><div class="n">0€</div><div class="l">en licencias</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="ia-intro">
+  <div class="wrap">
+    <div class="sec-id">// 00 · el reto</div>
+    <h2>¿Y si la IA que analiza seguridad nunca sacara los datos de la empresa?</h2>
+    <p class="lead">Las herramientas de IA en la nube son potentes, pero enviar fuera logs, configuraciones y hallazgos de seguridad es un problema real de privacidad y cumplimiento.</p>
+    <p>La hipótesis de este proyecto era sencilla: montar un flujo completo de identificación de vulnerabilidades web apoyado en un modelo de IA que corre <strong>íntegramente en una máquina local</strong>, sin depender de ningún servicio externo, y comprobar si de verdad es útil o si se queda en una demo.</p>
+    <p>La respuesta corta: funciona, con una condición que resultó ser la lección más valiosa de todo el proyecto — la IA necesita supervisión humana constante.</p>
+  </div>
+</section>
+
+<section id="ia-lab">
+  <div class="wrap">
+    <div class="sec-id">// 01 · el laboratorio</div>
+    <h2>Lo que hay bajo el capó</h2>
+    <p>Todo corre dentro de un único equipo con GPU, sobre Linux (WSL2). Cuatro piezas conectadas entre sí, más el analista al mando.</p>
+
+    <h3>El modelo de IA, en la propia GPU</h3>
+    <p>Elegí <strong>Qwen3.8-27B</strong> servido con <strong>Ollama</strong>. Es un modelo pensado para tareas con herramientas, encaja en la tarjeta gráfica y no necesita internet. Primero verifiqué que la GPU se veía desde Windows y desde dentro de Linux.</p>
+    <figure><img src="ia-local/img/01-gpu-vista-desde-windows.png" width="916" height="582" alt="GPU vista desde Windows" loading="lazy"><figcaption>Punto de partida: la GPU detectada y con driver reciente.</figcaption></figure>
+    <figure><img src="ia-local/img/02-servicio-ollama-activo.png" width="1109" height="451" alt="Servicio Ollama activo" loading="lazy"><figcaption>Ollama instalado y corriendo como servicio, escuchando solo en local (127.0.0.1).</figcaption></figure>
+
+    <p>Ajusté el modelo para ampliar su ventana de contexto a 64k — un agente que lee salidas largas de escáneres necesita memoria —, comprobando que seguía cargado al 100% en GPU.</p>
+    <figure><img src="ia-local/img/03-modelo-con-64k-de-contexto-al-100-gpu.png" width="1057" height="124" alt="Modelo con 64k de contexto al 100% GPU" loading="lazy"><figcaption>Modelo con 64k de contexto, cargado al 100% en GPU.</figcaption></figure>
+
+    <h3>El agente que da permiso antes de actuar</h3>
+    <p>Sobre el modelo, <strong>OpenCode</strong> hace de agente: puede ejecutar comandos y leer ficheros, pero está configurado para <strong>pedir aprobación antes de cada acción</strong>. Ese control manual es la columna vertebral de todo el proyecto.</p>
+    <figure><img src="ia-local/img/04-opencode-pidiendo-permiso.png" width="1085" height="525" alt="OpenCode pidiendo permiso" loading="lazy"><figcaption>El agente explica qué va a hacer y espera mi aprobación antes de ejecutar nada.</figcaption></figure>
+
+    <h3>Las herramientas y el objetivo</h3>
+    <p>Como escáneres, los estándar del sector: <strong>OWASP ZAP</strong> y <strong>Nuclei</strong>, ambos en Docker. Y como objetivo de prácticas, <strong>OWASP Juice Shop</strong>, una aplicación vulnerable a propósito, levantada solo en local.</p>
+    <figure><img src="ia-local/img/05-juice-shop-corriendo-en-local.png" width="1099" height="169" alt="Juice Shop corriendo en local" loading="lazy"><figcaption>Objetivo de prácticas corriendo y restringido a 127.0.0.1 — no accesible desde la red.</figcaption></figure>
+  </div>
+</section>
+
+<section id="ia-metodo">
+  <div class="wrap">
+    <div class="sec-id">// 02 · metodología</div>
+    <h2>De menos a más intrusivo, verificando cada paso</h2>
+    <div class="tl">
+      <div class="step on"><div class="st">paso 01</div><div class="tt">Escaneo con dos herramientas</div><div class="dd">ZAP en modo pasivo (rastrea y analiza sin atacar) y Nuclei (miles de comprobaciones de fallos conocidos), siempre a velocidad baja.</div></div>
+      <div class="step on"><div class="st">paso 02</div><div class="tt">Análisis con IA, supervisado</div><div class="dd">La IA lee los resultados, agrupa por gravedad y redacta en español. Yo reviso cada conclusión.</div></div>
+      <div class="step on"><div class="st">paso 03</div><div class="tt">Verificación manual</div><div class="dd">Cada hallazgo se confirma a mano antes de darlo por bueno, separando lo real de los falsos positivos.</div></div>
+      <div class="step on"><div class="st">paso 04</div><div class="tt">Documentación</div><div class="dd">La IA redacta las fichas a partir de datos ya verificados. Nunca al revés.</div></div>
+    </div>
+    <div class="note key">
+      <div class="t">PRINCIPIO RECTOR</div>
+      <p>La IA asiste, el analista decide. El modelo nunca ejecuta acciones por su cuenta: cada comando pasa por una aprobación manual.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ia-hallazgos">
+  <div class="wrap">
+    <div class="sec-id">// 03 · hallazgos</div>
+    <h2>Qué encontró el escaneo</h2>
+    <p>Al ser una web de prácticas no buscaba exhaustividad, sino validar el flujo. Aun así se identificaron y verificaron varios hallazgos reales, cada herramienta aportando lo que la otra no veía.</p>
+
+    <figure><img src="ia-local/img/06-resumen-de-zap.png" width="998" height="592" alt="Resumen de ZAP" loading="lazy"><figcaption>ZAP: resumen del escaneo pasivo — avisos de cabeceras y configuración.</figcaption></figure>
+    <figure><img src="ia-local/img/07-hallazgo-de-nuclei.png" width="1896" height="637" alt="Hallazgo de Nuclei" loading="lazy"><figcaption>Nuclei: detectó un endpoint de métricas expuesto que ZAP no vio. Complementariedad pura.</figcaption></figure>
+
+    <div class="find">
+      <div class="h"><span class="sev conf">CONFIRMADO</span><span class="nm">XSS reflejado en la barra de búsqueda</span><span class="tool">manual</span></div>
+      <div class="b"><p>El término de búsqueda viaja en el parámetro <span class="mono">q</span> y se renderiza como HTML sin sanitizar. Lo exploté a mano para confirmarlo.</p></div>
+    </div>
+    <div class="find">
+      <div class="h"><span class="sev media">MEDIA</span><span class="nm">Endpoint de métricas expuesto</span><span class="tool">Nuclei</span></div>
+      <div class="b"><p>Un endpoint de monitorización accesible sin autenticación, que filtra información interna del funcionamiento de la aplicación.</p></div>
+    </div>
+    <div class="find">
+      <div class="h"><span class="sev media">MEDIA</span><span class="nm">Fuga de información en páginas de error</span><span class="tool">ZAP · salida bruta</span></div>
+      <div class="b"><p>Las páginas de error mostraban rutas internas del servidor. No estaba marcado como alerta: apareció revisando la salida en bruto, no solo el informe.</p></div>
+    </div>
+    <div class="find">
+      <div class="h"><span class="sev media">MEDIA</span><span class="nm">Cabeceras de seguridad ausentes</span><span class="tool">ZAP</span></div>
+      <div class="b"><p>Falta de CSP y CORS permisivo — sin segunda línea de defensa frente a inyección de scripts.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ia-xss">
+  <div class="wrap">
+    <div class="sec-id">// 04 · explotación</div>
+    <h2>El XSS, paso a paso</h2>
+    <p>El hallazgo estrella. Primero pedí a la IA que me explicara la teoría — qué es la función de Angular implicada y por qué puede provocar un XSS. Acertó en el concepto, pero cometió un desliz que detecté: propuso una carga con <span class="mono">&lt;script&gt;</span> que <strong>no funciona</strong> en navegadores modernos insertada así.</p>
+    <figure><img src="ia-local/img/08-la-ia-explica-la-teoria-del-xss.png" width="1490" height="829" alt="La IA explica la teoría del XSS" loading="lazy"><figcaption>La IA explica el flujo del XSS. Buena teoría, pero con una imprecisión en la carga de ejemplo.</figcaption></figure>
+
+    <p>La técnica que de verdad funciona usa un <span class="mono">&lt;iframe&gt;</span> con <span class="mono">javascript:</span>. La ejecuté a mano en el navegador:</p>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i><span>payload — barra de búsqueda</span></div>
+      <pre><span class="cmt">// carga inofensiva: solo muestra un aviso, no roba nada</span>
+<span class="cmd">&lt;iframe src="javascript:alert('XSS')"&gt;</span></pre>
+    </div>
+    <figure><img src="ia-local/img/09-xss-ejecutado-con-exito.png" width="1632" height="897" alt="XSS ejecutado con éxito" loading="lazy"><figcaption>XSS confirmado: el código se ejecuta. Y las franjas verdes son el propio Juice Shop validando que los hallazgos (XSS, métricas expuestas, manejo de errores) eran reales.</figcaption></figure>
+
+    <div class="note">
+      <div class="t">DETALLE DE ANALISTA</div>
+      <p>Que la carga con <span class="mono">&lt;script&gt;</span> falle y la de <span class="mono">&lt;iframe&gt;</span> funcione no es un detalle menor: es justo el conocimiento que la IA no tenía y que distingue a quien entiende la técnica de quien solo copia un payload.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ia-ia">
+  <div class="wrap">
+    <div class="sec-id">// 05 · la IA y sus límites</div>
+    <h2>La lección más valiosa: la IA se equivoca</h2>
+    <p>Esta es la conclusión que más valor tiene del proyecto. La IA fue muy útil redactando informes en minutos, pero <strong>cometió errores de criterio en cada fase</strong>, y corregirlos definió cómo debe usarse. Su análisis evolucionó así:</p>
+
+    <div class="evo">
+      <div class="row"><div class="v">v1</div><div class="d"><b>Infravaloró.</b> Rebajó la gravedad de todo "por ser un laboratorio". Pero se valora la aplicación, no dónde está alojada.</div></div>
+      <div class="row"><div class="v">v2</div><div class="d"><b>Exageró.</b> Tras corregirla, se pasó de frenada: marcó hallazgos como graves de más y llegó a citar un identificador de alerta que no correspondía.</div></div>
+      <div class="row"><div class="v">v3</div><div class="d"><b>Calibrada.</b> Con reglas explícitas y supervisión, produjo un informe honesto que distinguía lo confirmado de lo no evaluado.</div></div>
+    </div>
+
+    <p>Cada error se corrigió afinando las instrucciones del agente y con mi revisión. El informe final fue de calidad <strong>solo porque hubo un humano verificando</strong>. Una IA así, sin supervisión, genera trabajo rápido pero poco fiable.</p>
+
+    <div class="note warn">
+      <div class="t">DECISIÓN DE DISEÑO</div>
+      <p>Por esto mismo, decidí que la IA <strong>no explota vulnerabilidades de forma autónoma</strong>. Prepara la prueba de concepto; yo la ejecuto y la valido. El control humano no es un extra: es lo que hace fiable todo el sistema.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ia-privacidad">
+  <div class="wrap">
+    <div class="sec-id">// 06 · privacidad</div>
+    <h2>Nada sale de la máquina</h2>
+    <p>La decisión de usar un modelo <strong>local</strong> es el núcleo del proyecto: a diferencia de una IA en la nube, ningún dato analizado abandona el equipo. Esto encaja de forma natural con marcos como la ISO 27001 y el ENS — evita transferir información sensible a terceros y no genera obligaciones de retención de datos.</p>
+    <p>Durante el trabajo detecté un detalle a controlar: una de las herramientas usa por defecto un servidor externo para ciertas comprobaciones. Identificarlo y saber desactivarlo es justo el tipo de control que un analista debe vigilar para que "local" signifique realmente local.</p>
+  </div>
+</section>
+
+<section id="ia-aprendizajes">
+  <div class="wrap">
+    <div class="sec-id">// 07 · aprendizajes</div>
+    <h2>Lo que me llevo</h2>
+    <div class="evo">
+      <div class="row"><div class="v">01</div><div class="d">Valorar la gravedad <b>como en producción</b>, nunca rebajarla por ser un laboratorio.</div></div>
+      <div class="row"><div class="v">02</div><div class="d">La IA necesita <b>reglas explícitas y supervisión</b>: pasó de infravalorar a exagerar en una sola sesión.</div></div>
+      <div class="row"><div class="v">03</div><div class="d">Guardar siempre la <b>salida en bruto</b> de las herramientas, no solo los informes: la fuga de errores estaba ahí.</div></div>
+      <div class="row"><div class="v">04</div><div class="d">Entender la técnica a bajo nivel: por qué un payload funciona y otro no.</div></div>
+      <div class="row"><div class="v">05</div><div class="d">Separar <b>escaneo de explotación</b>, y mantener el control humano sobre cada acción.</div></div>
+    </div>
+
+    <h3>Stack utilizado</h3>
+    <div>
+      <span class="tag">Qwen3.8-27B</span><span class="tag">Ollama</span><span class="tag">OpenCode</span><span class="tag">OWASP ZAP</span><span class="tag">Nuclei</span><span class="tag">Docker</span><span class="tag">WSL2 / Ubuntu</span><span class="tag">OWASP Juice Shop</span><span class="tag">RTX 5090</span>
+    </div>
+  </div>
+</section>
+
+</div>
+<footer>
+  <div class="wrap">
+    <div class="sig">aketx<b>@</b>sec:~$ <span style="color:var(--ink-dim)">logout</span></div>
+    <p>Aketx Herrero — Portafolio de ciberseguridad. Todos los trabajos se realizaron en entornos de laboratorio controlados y con fines formativos.</p>
+  </div>
+</footer>
+<script>
+(function () {
+  var views = Array.prototype.slice.call(document.querySelectorAll('.view'));
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs a'));
+  var current = null;
+  function route() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    var target = h ? document.getElementById(h) : null;
+    var view = target ? (target.classList.contains('view') ? target : target.closest('.view')) : null;
+    if (!view) { view = views[0]; target = null; }
+    var changed = view !== current;
+    views.forEach(function (v) { v.hidden = v !== view; });
+    tabs.forEach(function (t) {
+      if (t.getAttribute('href') === '#' + view.id) t.setAttribute('aria-current', 'page');
+      else t.removeAttribute('aria-current');
+    });
+    var active = document.querySelector('.tabs a[aria-current="page"]');
+    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    document.title = 'Aketx Herrero — ' + view.getAttribute('data-title');
+    current = view;
+    var how = changed ? 'instant' : 'smooth';
+    if (target && target !== view) target.scrollIntoView({ behavior: how });
+    else if (changed) window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
