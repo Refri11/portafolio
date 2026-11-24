@@ -1029,21 +1029,29 @@ Recall: 0.64  ·  Escapados: ids [177, 178, 179, 180, 190]</span></pre>
 </div>
 <div class="view" id="hashcat-5090" data-title="Cracking de contraseñas asistido por ML en la RTX 5090" hidden>
 
-<section id="hc-intro">
+<header class="hero">
   <div class="wrap">
-    <div class="sec-id">// el proyecto</div>
-    <h2>Cracking de contraseñas asistido por ML en una RTX 5090</h2>
-    <p class="lead">Un laboratorio que mide cuánto resisten las contraseñas: comparo cinco técnicas de generación de candidatos —diccionario, reglas, un modelo estadístico y un transformer neuronal que entrené yo— y las orquesta un LLM local que, por diseño, no puede inventar ni comandos ni cifras.</p>
-    <p>Lo monté sobre una RTX 5090 (32 GB) en Windows 11 + WSL2 + Docker. Todo es reproducible y cada número está medido, no estimado.</p>
-    <div class="note key">
-      <div class="t">CONTROL DEL LABORATORIO</div>
-      <p>Trabajo solo sobre hashes propios, generados a partir de un corpus público de research (rockyou) partido en train/test. Nunca se atacan credenciales de terceros.</p>
-    </div>
-    <div class="stats">
+    <div class="prompt-line"><span class="c">$</span> python3 crack_agent.py ntlm.txt --type ntlm<span class="cursor"></span></div>
+    <h1>Cinco formas de adivinar una contraseña, <span class="hl">y el muro que ninguna rompe</span>.</h1>
+    <p class="sub">Comparo diccionario, reglas, un modelo estadístico y un transformer neuronal propio, orquestados por un LLM local que no puede inventar ni comandos ni cifras. Todo medido sobre una RTX 5090 (32 GB).</p>
+    <div class="sig-name">Aketx Herrero<span>Proyecto personal · Red team · Noviembre 2026</span></div>
+    <div class="stats s4">
       <div class="stat"><div class="n">363 GH/s</div><div class="l">NTLM en la 5090</div></div>
       <div class="stat"><div class="n">5</div><div class="l">generadores comparados</div></div>
       <div class="stat"><div class="n">2,8 M</div><div class="l">hashes de test con ground truth</div></div>
       <div class="stat"><div class="n">22 GB</div><div class="l">LLM local en VRAM</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="hc-intro">
+  <div class="wrap">
+    <div class="sec-id">// el proyecto</div>
+    <h2>Un lab reproducible, cada número medido</h2>
+    <p>Lo monté sobre una RTX 5090 (32 GB) en Windows 11 + WSL2 + Docker. Comparo cinco técnicas de generación de candidatos sobre el mismo conjunto de hashes, y cada recall está medido con ground truth, no estimado.</p>
+    <div class="note key">
+      <div class="t">CONTROL DEL LABORATORIO</div>
+      <p>Trabajo solo sobre hashes propios, generados a partir de un corpus público de research (rockyou) partido en train/test. Nunca se atacan credenciales de terceros.</p>
     </div>
   </div>
 </section>
