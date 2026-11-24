@@ -257,12 +257,38 @@ figure img { height: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .tabs a, .proj a { transition: none; } }
 </style>
+<style>
+/* --- proyecto cracking RTX 5090 (usa la paleta existente) --- */
+.hc-readout{display:grid;gap:12px;margin:8px 0 14px}
+.hc-row{display:grid;grid-template-columns:150px 1fr 72px;align-items:center;gap:14px}
+.hc-row .nm{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink)}
+.hc-row .nm small{color:var(--ink-faint)}
+.hc-track{height:11px;background:var(--line);border-radius:3px;overflow:hidden}
+.hc-fill{height:100%;background:linear-gradient(90deg,var(--green-deep),var(--green));border-radius:3px}
+.hc-pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--green);text-align:right}
+.hc-chasm{display:grid;gap:13px;max-width:560px;margin:10px 0}
+.hc-b2{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center}
+.hc-b2 .lb{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-dim)}
+.hc-b2 .lb b{display:block;color:var(--ink);font-size:14px}
+.hc-b2 .vv{height:30px;border-radius:5px;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#06120a}
+.hc-big{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,7vw,58px);color:var(--amber);line-height:1;margin:18px 0 4px}
+.hc-tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin:8px 0}
+.hc-tbl th,.hc-tbl td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+.hc-tbl th{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);font-weight:500}
+.hc-tbl td.n{font-family:'JetBrains Mono',monospace;color:var(--green);font-weight:700;text-align:right;white-space:nowrap}
+.hc-tbl td.note{color:var(--ink-dim);font-size:13px}
+.hc-tbl tr:last-child td{border-bottom:none}
+.hc-arch{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.85;color:var(--ink-dim);background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto;white-space:pre;margin:8px 0 22px}
+.hc-arch b{color:var(--green);font-weight:700}
+.hc-arch i{color:var(--amber);font-style:normal}
+@media(max-width:560px){.hc-row{grid-template-columns:116px 1fr}.hc-row .hc-pct{grid-column:2;text-align:left}.hc-b2{grid-template-columns:80px 1fr}}
+</style>
 </head>
 <body>
 <nav>
   <div class="wrap">
     <div class="sig"><a href="#inicio">aketx<b>@</b>sec:<b>~</b>$</a></div>
-    <div class="tabs" role="navigation" aria-label="Prácticas"><a href="#inicio">Inicio</a><a href="#dvwa">DVWA · SQLi y XSS</a><a href="#ia-local">Escaneo con IA local</a><a href="#ia-soc">Triaje SOC con IA</a></div>
+    <div class="tabs" role="navigation" aria-label="Prácticas"><a href="#inicio">Inicio</a><a href="#dvwa">DVWA · SQLi y XSS</a><a href="#ia-local">Escaneo con IA local</a><a href="#ia-soc">Triaje SOC con IA</a><a href="#hashcat-5090">Cracking con ML</a></div>
   </div>
 </nav>
 <div class="view" id="inicio" data-title="Portafolio de ciberseguridad">
@@ -329,6 +355,15 @@ figure img { height: auto; }
     <div><span class="tag">Qwen3-14B</span><span class="tag">Ollama</span><span class="tag">MITRE ATT&amp;CK</span><span class="tag">Blue team</span><span class="tag">Python</span></div>
     <span class="open">abrir la práctica</span>
   </div>
+<ul class="proj"><li><a href="#hashcat-5090">
+  <div class="meta">nov 2026</div>
+  <div>
+    <h4 class="ttl">Cracking de contraseñas asistido por ML en la RTX 5090</h4>
+    <p class="desc">Benchmarks de la 5090 y comparativa de cinco generadores de candidatos —diccionario, reglas, PCFG y un transformer neuronal propio— orquestados por un LLM local que no puede inventar comandos ni métricas.</p>
+    <div><span class="tag">hashcat</span><span class="tag">RTX 5090</span><span class="tag">PCFG</span><span class="tag">PassGPT</span><span class="tag">Ollama</span><span class="tag">PyTorch</span></div>
+    <span class="open">abrir la práctica</span>
+  </div>
+</a></li></ul>
 </a></li></ul>
   </div>
 </section>
@@ -992,6 +1027,130 @@ Recall: 0.64  ·  Escapados: ids [177, 178, 179, 180, 190]</span></pre>
 </section>
 
 </div>
+<div class="view" id="hashcat-5090" data-title="Cracking de contraseñas asistido por ML en la RTX 5090" hidden>
+
+<section id="hc-intro">
+  <div class="wrap">
+    <div class="sec-id">// el proyecto</div>
+    <h2>Cracking de contraseñas asistido por ML en una RTX 5090</h2>
+    <p class="lead">Un laboratorio que mide cuánto resisten las contraseñas: comparo cinco técnicas de generación de candidatos —diccionario, reglas, un modelo estadístico y un transformer neuronal que entrené yo— y las orquesta un LLM local que, por diseño, no puede inventar ni comandos ni cifras.</p>
+    <p>Lo monté sobre una RTX 5090 (32 GB) en Windows 11 + WSL2 + Docker. Todo es reproducible y cada número está medido, no estimado.</p>
+    <div class="note key">
+      <div class="t">CONTROL DEL LABORATORIO</div>
+      <p>Trabajo solo sobre hashes propios, generados a partir de un corpus público de research (rockyou) partido en train/test. Nunca se atacan credenciales de terceros.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">363 GH/s</div><div class="l">NTLM en la 5090</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">generadores comparados</div></div>
+      <div class="stat"><div class="n">2,8 M</div><div class="l">hashes de test con ground truth</div></div>
+      <div class="stat"><div class="n">22 GB</div><div class="l">LLM local en VRAM</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="hc-resultados">
+  <div class="wrap">
+    <div class="sec-id">// resultados</div>
+    <h2>Recall de cada método</h2>
+    <p>Mismo objetivo: 2 865 802 hashes NTLM cuyo texto plano conozco. El test es disjunto del material de entrenamiento, así que todo acierto es generalización, no memoria.</p>
+    <div class="hc-readout">
+      <div class="hc-row"><div class="nm">diccionario <small>control</small></div><div class="hc-track"><div class="hc-fill" style="width:0.5%"></div></div><div class="hc-pct">0,00 %</div></div>
+      <div class="hc-row"><div class="nm">best66 <small>90 reglas</small></div><div class="hc-track"><div class="hc-fill" style="width:32.47%"></div></div><div class="hc-pct">32,47 %</div></div>
+      <div class="hc-row"><div class="nm">dive <small>~99k reglas</small></div><div class="hc-track"><div class="hc-fill" style="width:77.9%"></div></div><div class="hc-pct">77,90 %</div></div>
+      <div class="hc-row"><div class="nm">PCFG <small>estadístico</small></div><div class="hc-track"><div class="hc-fill" style="width:28.97%"></div></div><div class="hc-pct">28,97 %</div></div>
+      <div class="hc-row"><div class="nm">PassGPT <small>neuronal</small></div><div class="hc-track"><div class="hc-fill" style="width:3.39%"></div></div><div class="hc-pct">3,39 %</div></div>
+    </div>
+    <p>Ni con ~99 000 reglas cae el 22 % restante: ahí está el núcleo duro que de verdad resiste.</p>
+    <figure><img src="cracking/img/dive-7790.png" width="950" height="612" alt="hashcat recupera el 77,90 % de los hashes NTLM con el ruleset dive." loading="lazy"><figcaption>dive (~99k reglas) sobre NTLM: 2 232 333 / 2 865 802 = 77,90 %. El techo de las reglas.</figcaption></figure>
+  </div>
+</section>
+
+<section id="hc-chasm">
+  <div class="wrap">
+    <div class="sec-id">// por qué el hash importa</div>
+    <h2>El abismo de velocidad</h2>
+    <p>El algoritmo de hash pesa tanto como la contraseña. En la misma GPU, un NTLM sin sal se ataca a una velocidad absurda frente a un bcrypt diseñado para ser lento.</p>
+    <div class="hc-chasm">
+      <div class="hc-b2"><div class="lb">NTLM<b>363,1 GH/s</b></div><div class="vv" style="background:var(--red);width:100%">rápido = frágil</div></div>
+      <div class="hc-b2"><div class="lb">bcrypt<b>285,3 kH/s</b></div><div class="vv" style="background:var(--green);width:16%;min-width:118px">lento = resistente</div></div>
+    </div>
+    <div class="hc-big">1 272 000×</div>
+    <p>Lo que la 5090 prueba en NTLM en el tiempo que tarda con una sola contraseña de bcrypt. De ahí la conclusión para política de contraseñas (ISO 27001 / ENS): almacenar con funciones lentas y con sal, y priorizar longitud sobre complejidad.</p>
+  </div>
+</section>
+
+<section id="hc-metodos">
+  <div class="wrap">
+    <div class="sec-id">// cinco formas de adivinar</div>
+    <h2>Diccionario, reglas, estadística y neuronal</h2>
+    <table class="hc-tbl">
+      <thead><tr><th>Método</th><th>Tipo</th><th>Recall</th><th>Qué aporta</th></tr></thead>
+      <tbody>
+        <tr><td>Diccionario</td><td>control</td><td class="n">0,00 %</td><td class="note">Sets disjuntos → todo recall es generalización</td></tr>
+        <tr><td>best66</td><td>reglas</td><td class="n">32,47 %</td><td class="note">90 reglas, la mejor relación recall/tiempo</td></tr>
+        <tr><td>dive</td><td>reglas</td><td class="n">77,90 %</td><td class="note">~99k reglas: el techo de las reglas</td></tr>
+        <tr><td>PCFG</td><td>estadístico</td><td class="n">28,97 %</td><td class="note">~13× más eficiente por candidato que best66</td></tr>
+        <tr><td>PassGPT</td><td>neuronal</td><td class="n">3,39 %</td><td class="note">Bajo en bruto, pero pilla 8 649 que PCFG no</td></tr>
+      </tbody>
+    </table>
+    <figure><img src="cracking/img/passgpt-training.png" width="1895" height="695" alt="Entrenamiento del GPT char-level en la 5090: la pérdida baja y genera contraseñas plausibles." loading="lazy"><figcaption>El transformer propio entrenándose en la 5090: la pérdida cae y empieza a generar contraseñas verosímiles (jomashine, zamam17, karlisx2313…).</figcaption></figure>
+  </div>
+</section>
+
+<section id="hc-agente">
+  <div class="wrap">
+    <div class="sec-id">// el orquestador</div>
+    <h2>Un LLM decide, la 5090 ejecuta</h2>
+    <p>El agente separa dos cerebros: un modelo de lenguaje razona la estrategia, pero el script es dueño de los comandos verificados y mide el resultado. Por diseño, el LLM no puede inventar ni comandos ni métricas —lo aprendí a base de verlo alucinar «PCFG 90 %, PassGPT 98 %» sin medir nada—.</p>
+<div class="hc-arch">   hash NTLM
+        │
+        ▼
+ ┌──────────────────┐   pide plan    ┌───────────────────────┐
+ │  crack_agent.py  │ ─────────▶ │  <b>LLM local</b> (Ollama)     │
+ │   (orquestador)  │                │  qwen3-coder:30b · 22 GB  │
+ │                  │ ◀───────────── │  <b>DECIDE</b> la escalera      │
+ └──────────────────┘   IDs del      └───────────────────────┘
+        │               catálogo
+        │ ejecuta y <b>MIDE</b> (recall real de hashcat)
+        ▼
+ ┌────────────────────────────────┐
+ │  contenedor · <b>RTX 5090 EJECUTA</b>              │
+ │  diccionario · reglas · PCFG · PassGPT         │
+ └────────────────────────────────┘
+
+ <i>Guard:</i> si el LLM se inventa un paso o una cifra, el script lo descarta.</div>
+    <figure><img src="cracking/img/agent-plan.png" width="1102" height="133" alt="El LLM decide la escalera dict, best66, dive, pcfg, passgpt y razona el orden." loading="lazy"><figcaption>El LLM elige la escalera y la razona con los recalls reales medidos, no inventados.</figcaption></figure>
+    <figure><img src="cracking/img/agent-results.png" width="1103" height="244" alt="Resumen del agente con los cinco recalls medidos." loading="lazy"><figcaption>Los cinco pasos ejecutados y medidos: 0 → 32,47 → 77,90 → 28,97 → 3,39 %. Nada estimado.</figcaption></figure>
+  </div>
+</section>
+
+<section id="hc-gpu">
+  <div class="wrap">
+    <div class="sec-id">// por qué la 5090 y no una 5070</div>
+    <h2>Los 32 GB sostienen el modelo</h2>
+    <p>El cracking en sí apenas usa VRAM: una 5070 de 12 GB lo haría, solo que más lento. Los 32 GB se justifican en la parte de IA —alojar el LLM orquestador de 22 GB, que en una 5070 no entra— y en entrenar el generador neuronal.</p>
+    <figure><img src="cracking/img/llm-on-5090.png" width="1893" height="659" alt="nvidia-smi: el modelo qwen3-coder:30b ocupa 22 GB de los 32 de la RTX 5090, al 100% en GPU." loading="lazy"><figcaption>qwen3-coder:30b residente en la 5090: 22 397 MiB de 32 607, al 100 % en GPU. Imposible en una 5070 de 12 GB.</figcaption></figure>
+  </div>
+</section>
+
+<section id="hc-aprendizajes">
+  <div class="wrap">
+    <div class="sec-id">// lo que demuestra</div>
+    <h2>Cuatro conclusiones honestas</h2>
+    <p><strong>El hash importa.</strong> NTLM es ~1,27 M× más rápido de atacar que bcrypt. Sin sal y con función rápida, la contraseña casi da igual.</p>
+    <p><strong>La estadística gana a la fuerza bruta.</strong> PCFG logra casi el recall de las reglas con 15× menos candidatos: aprende estructura en vez de mutar palabras.</p>
+    <p><strong>Lo neuronal complementa, no sustituye.</strong> PassGPT es flojo en solitario, pero alcanza 8 649 contraseñas que PCFG no. No hay «mejor generador»: cada familia cubre un rincón distinto.</p>
+    <p><strong>El núcleo resiste.</strong> Ninguna técnica revienta el 22 % duro. Lo que aguanta no es «palabra + año + símbolo», es longitud y aleatoriedad reales.</p>
+    <h3>Stack utilizado</h3>
+    <div>
+      <span class="tag">RTX 5090 · 32 GB</span><span class="tag">WSL2 / Ubuntu</span><span class="tag">Docker</span><span class="tag">hashcat 8.0.0</span><span class="tag">pcfg_cracker</span><span class="tag">PyTorch cu128</span><span class="tag">Ollama · qwen3-coder:30b</span><span class="tag">Python</span>
+    </div>
+    <p style="margin-top:20px"><a class="inline" href="https://github.com/Refri11/hashcat-5090-ml-cracking">Repositorio completo en GitHub</a></p>
+  </div>
+</section>
+
+</div>
+
 <footer>
   <div class="wrap">
     <div class="sig">aketx<b>@</b>sec:~$ <span style="color:var(--ink-dim)">logout</span></div>
